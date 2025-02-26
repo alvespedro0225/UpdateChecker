@@ -1,4 +1,4 @@
-namespace updateBot.Models;
+namespace Data.Models;
 
 public class ModelId
 {

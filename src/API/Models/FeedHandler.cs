@@ -1,6 +1,8 @@
+using Data.Models;
+
 namespace updateBot.Models;
 
-public static class DataManager
+public static class FeedHandler
 {
     public static bool AreEqual(ModelFeed oldFeed, ModelFeed newFeed)
     {

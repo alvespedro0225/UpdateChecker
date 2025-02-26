@@ -2,7 +2,7 @@
 using updateBot.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-const string path = "/home/pedro/code/csharp/updateBot/updateBot";
+const string path = "/home/pedro/code/csharp/API/API";
 var jsonOptions = new JsonSerializerOptions
 {
     PropertyNameCaseInsensitive = true,

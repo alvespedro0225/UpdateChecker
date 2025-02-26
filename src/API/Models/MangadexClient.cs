@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Data.Models;
 using updateBot.Interfaces;
 
 namespace updateBot.Models;

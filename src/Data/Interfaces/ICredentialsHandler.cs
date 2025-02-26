@@ -1,6 +1,6 @@
-using updateBot.Models;
+using Data.Models;
 
-namespace updateBot.Interfaces;
+namespace Data.Interfaces;
 
 public interface ICredentialsHandler
 {
