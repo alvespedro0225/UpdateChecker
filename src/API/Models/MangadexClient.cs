@@ -2,13 +2,10 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Data.Models;
-using updateBot.Interfaces;
 
 namespace updateBot.Models;
 
-public sealed class MangadexClient(ModelCredentials modelCredentials,
-    ICredentialsHandler credentialsHandler,
-    JsonSerializerOptions jsonOptions)
+public sealed class MangadexClient(ModelCredentials modelCredentials)
 {
     private ModelCredentials _modelCredentials = modelCredentials;
     private const string BaseUrl = "https://api.mangadex.org"; 
@@ -22,14 +19,11 @@ public sealed class MangadexClient(ModelCredentials modelCredentials,
         }
     };
 
-    public async Task<ModelFeed> CheckFeed()
+    public async Task<string> CheckFeed()
     {
         var res = await _httpClient.GetAsync($"{BaseUrl}/user/follows/manga/feed?limit=5&order%5BpublishAt%5D=desc&translatedLanguage%5B%5D=en");
         res.EnsureSuccessStatusCode();
-        var data = await res.Content.ReadAsStringAsync();
-        var newFeed = JsonSerializer.Deserialize<ModelFeed>(data, jsonOptions);
-        if (newFeed == null) throw new NullReferenceException();
-        return newFeed;
+        return await res.Content.ReadAsStringAsync();
     }
 
     public async Task UpdateTokenAsync()
@@ -62,7 +56,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials,
             RefreshToken = _modelCredentials.RefreshToken
         };
         _modelCredentials = newCredentials;
-        await credentialsHandler.SaveCredentialsAsync(_modelCredentials);
+        await FileManager.SaveJsonFileAsync(Constants.CredentialsFile, _modelCredentials);
         UpdateHeaders();
     }
 

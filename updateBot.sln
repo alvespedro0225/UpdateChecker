@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "updateBot", "src\updateBot\updateBot.csproj", "{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "src\API\API.csproj", "{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emails", "src\Emails\Emails.csproj", "{2C125DF1-F305-4B29-8B13-BB57796D8294}"
 EndProject
