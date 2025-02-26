@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C1C4A469-6FD9-440D-9E4C-B27AF82B119A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "updateBot", "updateBot\updateBot.csproj", "{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emails", "Emails\Emails.csproj", "{2C125DF1-F305-4B29-8B13-BB57796D8294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{2209B97C-5701-4A96-8CAE-9FAC16506766}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C125DF1-F305-4B29-8B13-BB57796D8294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C125DF1-F305-4B29-8B13-BB57796D8294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C125DF1-F305-4B29-8B13-BB57796D8294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C125DF1-F305-4B29-8B13-BB57796D8294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2209B97C-5701-4A96-8CAE-9FAC16506766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2209B97C-5701-4A96-8CAE-9FAC16506766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2209B97C-5701-4A96-8CAE-9FAC16506766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2209B97C-5701-4A96-8CAE-9FAC16506766}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2FAEB863-4E8A-4BD1-A7F2-35B5E66ED488} = {C1C4A469-6FD9-440D-9E4C-B27AF82B119A}
+		{2C125DF1-F305-4B29-8B13-BB57796D8294} = {C1C4A469-6FD9-440D-9E4C-B27AF82B119A}
+		{2209B97C-5701-4A96-8CAE-9FAC16506766} = {C1C4A469-6FD9-440D-9E4C-B27AF82B119A}
+	EndGlobalSection
+EndGlobal
