@@ -1,8 +1,8 @@
-using Data.Models;
+using Data.Models.JSON;
 
 namespace Data.Interfaces
 {
-    public interface IMangaLoader
+    public interface IMangaHandler
     {
         public Task<ModelFeed> GetDataAsync();
         public Task SaveDataAsync(ModelFeed data);

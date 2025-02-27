@@ -1,10 +1,11 @@
 using System.Text.Json;
+using Data.Interfaces;
 
 namespace Data.Models;
 
-public static class FileManager
+public sealed class FileFetcher : IJsonFetcher
 {
-    public static async Task<T> GetJsonFileAsync<T>(string file)
+    public async Task<T> GetJsonDataAsync<T>(string file)
     {
         using var stream = new StreamReader(Constants.Path + file);
         var fileData = await stream.ReadToEndAsync();
@@ -13,7 +14,7 @@ public static class FileManager
         return data;
     }
 
-    public static async Task SaveJsonFileAsync<T>(string file, T data)
+    public async Task SaveJsonDataAsync<T>(string file, T data)
     {
         await using var stream = new StreamWriter(Constants.Path + file);
         var json = JsonSerializer.Serialize(data, Constants.JsonOptions);
