@@ -33,6 +33,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
                 : e.Message);
             Environment.Exit(1);
         }
+
         var uriBuilder = new UriBuilder(Constants.MangadexApi + Constants.MangadexFeed);
         uriBuilder.Query += "limit=5";
         uriBuilder.Query += "&order[publishAt]=desc";

@@ -12,7 +12,9 @@ public static class Constants
     public const string MailFile = "mailData.json";
     public const string Subject = "New chapters";
     public const string ChapterUrl = "https://mangadex.org/chapter";
-    public static readonly string Path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.updateBot/";
+
+    public static readonly string Path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) +
+                                         "/.updateBot/";
 
     public static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
     {

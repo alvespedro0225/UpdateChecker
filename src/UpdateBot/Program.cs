@@ -5,8 +5,6 @@ using updateBot.Emails;
 using Constants = Data.Models.Constants;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-
-
 var fileManager = new FileFetcher();
 var credentials = await fileManager.GetJsonDataAsync<ModelCredentials>(Constants.CredentialsFile);
 var client = new MangadexClient(credentials, fileManager);
@@ -20,6 +18,7 @@ else
     oldFeed = JsonSerializer.Deserialize<ModelFeed>(res, Constants.JsonOptions);
     await fileManager.SaveJsonDataAsync(Constants.FeedFile, oldFeed);
 }
+
 var mailHandler = new MailHandler(fileManager);
 
 while (true)
@@ -31,15 +30,18 @@ while (true)
         Console.WriteLine("Found new chapters.");
         var message = string.Empty;
         await fileManager.SaveJsonDataAsync(Constants.FeedFile, newFeed);
-        
+
         foreach (string chapter in newChapters)
         {
             message += $"{Constants.ChapterUrl}/{chapter}\n";
         }
+
         Console.WriteLine("Sending mail.");
         await mailHandler.Notify(message);
     }
-    else Console.Write("Nothing new.");
+    else
+        Console.Write("Nothing new.");
+
     oldFeed = newFeed;
     await Task.Delay(new TimeSpan(1, 0, 0));
 }
