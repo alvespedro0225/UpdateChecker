@@ -22,7 +22,17 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
 
     public async Task<string> CheckFeedAsync()
     {
-        await UpdateTokenAsync();
+        try
+        {
+            await UpdateTokenAsync();
+        }
+        catch (HttpRequestException e)
+        {
+            Console.WriteLine(e.StatusCode == null
+                ? "There was an issue connecting to the server. \nPlease check your internet connection and try again."
+                : e.Message);
+            Environment.Exit(1);
+        }
         var uriBuilder = new UriBuilder(Constants.MangadexApi + Constants.MangadexFeed);
         uriBuilder.Query += "limit=5";
         uriBuilder.Query += "&order[publishAt]=desc";
@@ -51,6 +61,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
         {
             Console.WriteLine(e.StatusCode);
             Console.WriteLine(await res.Content.ReadAsStringAsync());
+            Environment.Exit(1);
             throw;
         }
 

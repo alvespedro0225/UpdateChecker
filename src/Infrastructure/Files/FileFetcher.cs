@@ -8,6 +8,11 @@ public sealed class FileFetcher : IJsonFetcher
 {
     public async Task<T> GetJsonDataAsync<T>(string file)
     {
+        if (!File.Exists(Constants.Path + file))
+        {
+            Console.WriteLine($"File {file} does not exist");
+            Environment.Exit(1);
+        }
         using var stream = new StreamReader(Constants.Path + file);
         var fileData = await stream.ReadToEndAsync();
         var data = JsonSerializer.Deserialize<T>(fileData, Constants.JsonOptions);
