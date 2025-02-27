@@ -1,9 +1,12 @@
 namespace Data.Models.JSON;
 
-public class ModelMail
+public sealed class ModelMailInfo
 {
-    public string From { get; set; }
-    public string To { get; set; }
-    public string Password { get; set; }
-    public string Username { get; set; }
+    public string FromName { get; set; } = null!;
+    public string ToName { get; set; } = null!;
+    public string From { get; set; } = null!;
+    public string To { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string Host { get; set; } = null!;
+    public int Port { get; set; }
 }

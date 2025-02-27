@@ -1,6 +1,6 @@
 namespace Data.Models.JSON;
 
-public class ModelId
+public sealed class ModelId
 {
     public string? Id { get; set; }
 }

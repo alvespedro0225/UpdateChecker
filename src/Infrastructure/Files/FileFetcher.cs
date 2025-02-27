@@ -1,7 +1,8 @@
 using System.Text.Json;
 using Data.Interfaces;
+using Data.Models;
 
-namespace Data.Models;
+namespace Infrastructure.Files;
 
 public sealed class FileFetcher : IJsonFetcher
 {
