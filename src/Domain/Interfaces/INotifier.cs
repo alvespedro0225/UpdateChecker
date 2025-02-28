@@ -1,4 +1,4 @@
-namespace Data.Interfaces;
+namespace Domain.Interfaces;
 
 public interface INotifier
 {

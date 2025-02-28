@@ -1,6 +1,6 @@
-using Data.Models.JSON;
+using Domain.Models.JSON;
 
-namespace updateBot.Client;
+namespace Application.Client;
 
 public static class FeedHandler
 {

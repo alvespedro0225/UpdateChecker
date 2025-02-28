@@ -1,6 +1,6 @@
 using System.Text.Json;
-using Data.Interfaces;
-using Data.Models;
+using Domain.Interfaces;
+using Domain.Models;
 
 namespace Infrastructure.Files;
 

@@ -1,4 +1,4 @@
-namespace Data.Models.JSON;
+namespace Domain.Models.JSON;
 
 public sealed class ModelToken
 {

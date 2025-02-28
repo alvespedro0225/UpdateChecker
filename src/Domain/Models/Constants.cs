@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace Data.Models;
+namespace Domain.Models;
 
 public static class Constants
 {

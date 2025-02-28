@@ -1,10 +1,10 @@
-using Data.Interfaces;
-using Data.Models;
-using Data.Models.JSON;
+using Domain.Interfaces;
+using Domain.Models;
+using Domain.Models.JSON;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace updateBot.Emails;
+namespace UpdateChecker.Emails;
 
 public sealed class MailHandler(IJsonFetcher fetcher) : INotifier
 {

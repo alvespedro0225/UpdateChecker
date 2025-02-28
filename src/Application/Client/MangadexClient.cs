@@ -1,11 +1,11 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Data.Interfaces;
-using Data.Models;
-using Data.Models.JSON;
+using Domain.Interfaces;
+using Domain.Models;
+using Domain.Models.JSON;
 
-namespace updateBot.Client;
+namespace Application.Client;
 
 public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetcher jsonFetcher) : IClient
 {
@@ -16,7 +16,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
         DefaultRequestHeaders =
         {
             Authorization = new AuthenticationHeaderValue("Bearer", modelCredentials.AccessToken),
-            UserAgent = { new ProductInfoHeaderValue("UpdateBot", "1.0") }
+            UserAgent = { new ProductInfoHeaderValue("UpdateChecker", "1.0") }
         }
     };
 

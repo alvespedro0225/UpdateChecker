@@ -1,6 +1,6 @@
-using Data.Models.JSON;
+using Domain.Models.JSON;
 
-namespace Data.Interfaces
+namespace Domain.Interfaces
 {
     public interface IMangaHandler
     {

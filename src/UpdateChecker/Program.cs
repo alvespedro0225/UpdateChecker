@@ -1,8 +1,8 @@
-﻿using Data.Models.JSON;
+﻿using Application.Client;
+using Domain.Models.JSON;
 using Infrastructure.Files;
-using updateBot.Client;
-using updateBot.Emails;
-using Constants = Data.Models.Constants;
+using UpdateChecker.Emails;
+using Constants = Domain.Models.Constants;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 var fileManager = new FileFetcher();
