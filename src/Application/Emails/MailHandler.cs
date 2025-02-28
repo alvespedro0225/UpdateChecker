@@ -4,7 +4,7 @@ using Domain.Models.JSON;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace UpdateChecker.Emails;
+namespace Application.Emails;
 
 public sealed class MailHandler(IJsonFetcher fetcher) : INotifier
 {

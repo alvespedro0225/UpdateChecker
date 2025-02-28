@@ -1,7 +1,7 @@
 ﻿using Application.Client;
+using Application.Emails;
 using Domain.Models.JSON;
 using Infrastructure.Files;
-using UpdateChecker.Emails;
 using Constants = Domain.Models.Constants;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
