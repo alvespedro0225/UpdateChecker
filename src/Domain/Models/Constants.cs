@@ -12,11 +12,11 @@ public static class Constants
     public const string MailFile = "mailData.json";
     public const string Subject = "New chapters";
     public const string ChapterUrl = "https://mangadex.org/chapter";
-
-    public static readonly string Path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) +
-                                         "/.updateChecker/";
-
-    public static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+    private static readonly string FolderName = "updateChecker" + System.IO.Path.DirectorySeparatorChar;
+    public static readonly string Path =
+        System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FolderName);
+        
+    public static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true, WriteIndented = true, IndentSize = 4
     };

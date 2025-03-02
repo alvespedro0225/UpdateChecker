@@ -9,9 +9,14 @@ public static class FeedHandler
         NullCheck(oldFeed);
         NullCheck(newFeed);
         newChapters = [];
-        for (var i = 0; i < oldFeed.Data.Count; i++)
-            if (oldFeed.Data[i]!.Id != newFeed.Data[i]!.Id)
-                newChapters.Add(newFeed.Data[i]!.Id!);
+        foreach (ModelId? chapterId in newFeed.Data)
+        {
+            // if all chapters in old feed are different from the chapter id, it means it's a new chapter
+            if (oldFeed.Data.All(x => x!.Id != chapterId!.Id))
+            {
+                newChapters.Add(chapterId!.Id!);
+            }
+        }
 
         return newChapters.Count == 0;
     }

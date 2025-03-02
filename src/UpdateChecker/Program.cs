@@ -10,7 +10,7 @@ var credentials = await fileManager.GetJsonDataAsync<ModelCredentials>(Constants
 var client = new MangadexClient(credentials, fileManager);
 ModelFeed? oldFeed;
 
-if (File.Exists(Constants.FeedFile))
+if (File.Exists(Path.Combine(Constants.Path, Constants.FeedFile)))
     oldFeed = await fileManager.GetJsonDataAsync<ModelFeed>(Constants.FeedFile);
 else
 {
