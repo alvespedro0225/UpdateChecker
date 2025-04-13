@@ -39,8 +39,6 @@ while (true)
         Console.WriteLine("Sending mail.");
         await mailHandler.Notify(message);
     }
-    else
-        Console.Write("Nothing new.");
 
     oldFeed = newFeed;
     await Task.Delay(new TimeSpan(1, 0, 0));

@@ -2,11 +2,11 @@ namespace Domain.Models.JSON;
 
 public sealed class ModelMailInfo
 {
-    public string FromName { get; set; } = null!;
-    public string ToName { get; set; } = null!;
-    public string From { get; set; } = null!;
-    public string To { get; set; } = null!;
-    public string Password { get; set; } = null!;
-    public string Host { get; set; } = null!;
-    public int Port { get; set; }
+    public required string FromName { get; set; }
+    public required string ToName { get; set; }
+    public required string From { get; set; }
+    public required string To { get; set; }
+    public required string Password { get; set; }
+    public required string Host { get; set; }
+    public required int Port { get; set; }
 }
