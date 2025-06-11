@@ -1,13 +1,14 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Domain.Interfaces;
 using Domain.Models;
 using Domain.Models.JSON;
 
-namespace Application.Client;
+namespace Application.Services.Implementations;
 
-public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetcher jsonFetcher) : IClient
+public sealed class MangadexService(
+    ModelCredentials modelCredentials,
+    ICredentialsService credentialsService) : IHttpClientService
 {
     private ModelCredentials _modelCredentials = modelCredentials;
 
@@ -20,7 +21,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
         }
     };
 
-    public async Task<string> CheckFeedAsync()
+    public async Task<string> GetAsync()
     {
         try
         {
@@ -77,7 +78,7 @@ public sealed class MangadexClient(ModelCredentials modelCredentials, IJsonFetch
             RefreshToken = _modelCredentials.RefreshToken
         };
         _modelCredentials = newCredentials;
-        await jsonFetcher.SaveJsonDataAsync(Constants.CredentialsFile, _modelCredentials);
+        await credentialsService.SaveCredentialsAsync(Constants.CredentialsFile, _modelCredentials);
         UpdateHeaders();
     }
 

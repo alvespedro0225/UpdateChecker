@@ -1,6 +1,6 @@
-namespace Domain.Models.JSON;
+namespace Domain.Models;
 
-public sealed class ModelMailInfo
+public sealed record ModelMailInfo
 {
     public required string FromName { get; set; }
     public required string ToName { get; set; }

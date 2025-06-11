@@ -1,35 +1,34 @@
-﻿using Application.Client;
-using Application.Emails;
-using Domain.Models.JSON;
+﻿using Application.Services.Implementations;
+using Domain.Models;
 using Infrastructure.Files;
 using Constants = Domain.Models.Constants;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-var fileManager = new FileFetcher();
-var credentials = await fileManager.GetJsonDataAsync<ModelCredentials>(Constants.CredentialsFile);
-var client = new MangadexClient(credentials, fileManager);
+var fileManager = new FileService();
+var credentials = await fileManager.GetCredentialsAsync<ModelCredentials>(Constants.CredentialsFile);
+var client = new MangadexService(credentials, fileManager);
 ModelFeed? oldFeed;
 
 if (File.Exists(Path.Combine(Constants.Path, Constants.FeedFile)))
-    oldFeed = await fileManager.GetJsonDataAsync<ModelFeed>(Constants.FeedFile);
+    oldFeed = await fileManager.GetCredentialsAsync<ModelFeed>(Constants.FeedFile);
 else
 {
-    var res = await client.CheckFeedAsync();
+    var res = await client.GetAsync();
     oldFeed = JsonSerializer.Deserialize<ModelFeed>(res, Constants.JsonOptions);
-    await fileManager.SaveJsonDataAsync(Constants.FeedFile, oldFeed);
+    await fileManager.SaveCredentialsAsync(Constants.FeedFile, oldFeed);
 }
 
-var mailHandler = new MailHandler(fileManager);
-
+var mailHandler = new MailService(fileManager);
+var feedService = new FeedService();
 while (true)
 {
-    var response = await client.CheckFeedAsync();
+    var response = await client.GetAsync();
     var newFeed = JsonSerializer.Deserialize<ModelFeed>(response, Constants.JsonOptions);
-    if (!FeedHandler.AreEqual(oldFeed!, newFeed!, out var newChapters))
+    if (!feedService.CheckUpdate(oldFeed!, newFeed!, out var newChapters))
     {
         Console.WriteLine("Found new chapters.");
         var message = string.Empty;
-        await fileManager.SaveJsonDataAsync(Constants.FeedFile, newFeed);
+        await fileManager.SaveCredentialsAsync(Constants.FeedFile, newFeed);
 
         foreach (string chapter in newChapters)
         {

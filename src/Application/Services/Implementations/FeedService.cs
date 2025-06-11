@@ -1,10 +1,10 @@
-using Domain.Models.JSON;
+using Domain.Models;
 
-namespace Application.Client;
+namespace Application.Services.Implementations;
 
-public static class FeedHandler
+public sealed class FeedService : IFeedService
 {
-    public static bool AreEqual(ModelFeed oldFeed, ModelFeed newFeed, out List<string> newChapters)
+    public bool CheckUpdate(ModelFeed oldFeed, ModelFeed newFeed, out List<string> newChapters)
     {
         NullCheck(oldFeed);
         NullCheck(newFeed);

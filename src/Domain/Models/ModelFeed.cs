@@ -1,6 +1,6 @@
-namespace Domain.Models.JSON;
+namespace Domain.Models;
 
-public sealed class ModelFeed
+public sealed record ModelFeed
 {
     public string? Result { get; init; }
     public string? Response { get; init; }

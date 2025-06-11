@@ -1,6 +1,6 @@
-namespace Domain.Models.JSON;
+namespace Domain.Models;
 
-public sealed class ModelCredentials
+public sealed record ModelCredentials
 {
     public string? AccessToken { get; init; }
     public string? RefreshToken { get; init; }

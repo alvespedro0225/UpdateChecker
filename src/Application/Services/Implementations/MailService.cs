@@ -1,16 +1,14 @@
-using Domain.Interfaces;
 using Domain.Models;
-using Domain.Models.JSON;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace Application.Emails;
+namespace Application.Services.Implementations;
 
-public sealed class MailHandler(IJsonFetcher fetcher) : INotifier
+public sealed class MailService(ICredentialsService credentialsService) : INotificationService
 {
     public async Task Notify(string message)
     {
-        var model = await fetcher.GetJsonDataAsync<ModelMailInfo>(Constants.MailFile);
+        var model = await credentialsService.GetCredentialsAsync<ModelMailInfo>(Constants.MailFile);
         var mailMessage = CreateMessage(message, model);
         using var client = new SmtpClient();
         await client.ConnectAsync(model.Host, model.Port);
