@@ -18,7 +18,7 @@ public sealed class FeedService : IFeedService
             }
         }
 
-        return newChapters.Count == 0;
+        return newChapters.Count > 0;
     }
 
     private static void NullCheck(ModelFeed feed)

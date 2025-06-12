@@ -1,14 +1,16 @@
 using System.Text.Json;
 using Application.Services;
+using Domain.Constants;
 using Domain.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Files;
 
-public sealed class FileService : ICredentialsService
+public sealed class FileService(IConfiguration configuration) : IFileService
 {
-    public async Task<T> GetCredentialsAsync<T>(string file)
+    public async ValueTask<T> GetFileDataAsync<T>(string file)
     {
-        var path = Path.Combine(Constants.Path, file);
+        var path = Path.Combine(Directories.BaseDir, file);
         
         if (!File.Exists(path))
         {
@@ -18,24 +20,19 @@ public sealed class FileService : ICredentialsService
 
         using var stream = new StreamReader(path);
         var fileData = await stream.ReadToEndAsync();
-        var data = JsonSerializer.Deserialize<T>(fileData, Constants.JsonOptions);
+        var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.Options);
         
         if (data is null) 
             throw new NullReferenceException("File data is null");
         
         return data;
     }
-
-    public Task<T> GetCredentialsAsync<T>()
+    
+    public async ValueTask SaveCredentialsAsync<T>(string file, T data)
     {
-        throw new NotImplementedException();
-    }
-
-    public async Task SaveCredentialsAsync<T>(string file, T data)
-    {
-        var path = Path.Combine(Constants.Path, file);
+        var path = Path.Combine(Directories.BaseDir, file);
         await using var stream = new StreamWriter(path);
-        var json = JsonSerializer.Serialize(data, Constants.JsonOptions);
+        var json = JsonSerializer.Serialize(data, JsonOptions.Options);
         await stream.WriteAsync(json);
     }
 }

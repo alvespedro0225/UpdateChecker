@@ -1,14 +1,15 @@
+using Domain.Constants;
 using Domain.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
 
 namespace Application.Services.Implementations;
 
-public sealed class MailService(ICredentialsService credentialsService) : INotificationService
+public sealed class EmailService(IFileService fileService) : INotificationService
 {
     public async Task Notify(string message)
     {
-        var model = await credentialsService.GetCredentialsAsync<ModelMailInfo>(Constants.MailFile);
+        var model = await fileService.GetFileDataAsync<ModelMailInfo>(Directories.MailFile);
         var mailMessage = CreateMessage(message, model);
         using var client = new SmtpClient();
         await client.ConnectAsync(model.Host, model.Port);
@@ -22,7 +23,7 @@ public sealed class MailService(ICredentialsService credentialsService) : INotif
         var mailMessage = new MimeMessage();
         mailMessage.From.Add(new MailboxAddress(model.FromName, model.From));
         mailMessage.To.Add(new MailboxAddress(model.ToName, model.To));
-        mailMessage.Subject = Constants.Subject;
+        mailMessage.Subject = Directories.Subject;
         mailMessage.Body = new TextPart("plain") { Text = message };
         return mailMessage;
     }
