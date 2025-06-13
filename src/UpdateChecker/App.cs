@@ -33,7 +33,7 @@ public class App(
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 
     private async Task Init()
@@ -60,6 +60,7 @@ public class App(
             {
                 message.AppendLine($"{ChapterUrl}/{chapter}");
             }
+            
             var notification = notificationService.Notify(message.ToString());
             Console.WriteLine("Sending mail.");
             await notification;

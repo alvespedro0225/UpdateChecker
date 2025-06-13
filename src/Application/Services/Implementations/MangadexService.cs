@@ -8,30 +8,25 @@ using Domain.Models.JSON;
 
 namespace Application.Services.Implementations;
 
-public sealed class MangadexService(
-    ModelCredentials modelCredentials,
-    IFileService fileService) : IHttpClientService
+public sealed class MangadexService(IFileService fileService) : IHttpClientService
 {
-    private ModelCredentials _modelCredentials = modelCredentials;
+    private ModelCredentials _modelCredentials = fileService.GetFileData<ModelCredentials>(Directories.CredentialsFile);
     private const string MangadexApi = "https://api.mangadex.org";
     private const string MangadexAuth = "https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token";
     private const string MangadexFeed = "/user/follows/manga/feed";
-    
-    private readonly HttpClient _httpClient = new()
-    {
-        DefaultRequestHeaders =
-        {
-            Authorization = new AuthenticationHeaderValue("Bearer", modelCredentials.AccessToken),
-            UserAgent = { new ProductInfoHeaderValue("UpdateChecker", "1.0") }
-        }
-    };
+    private readonly IHttpClientFactory _httpClientFactory = null!;
 
     public async ValueTask<ModelFeed> GetAsync()
     {
+        var client = _httpClientFactory.CreateClient("Mangadex");
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
+        
         try
         {
             await UpdateTokenAsync();
         }
+        
         catch (HttpRequestException e)
         {
             Console.WriteLine(e.StatusCode == null
@@ -44,7 +39,7 @@ public sealed class MangadexService(
         uriBuilder.Query += "limit=5";
         uriBuilder.Query += "&order[publishAt]=desc";
         uriBuilder.Query += "&translatedLanguage[]=en";
-        var res = await _httpClient.GetAsync(uriBuilder.ToString());
+        var res = await client.GetAsync(uriBuilder.ToString());
         res.EnsureSuccessStatusCode();
         var data = await res.Content.ReadAsStringAsync();
         var feed = JsonSerializer.Deserialize<ModelFeed>(data, JsonSerializerOptions.Web);
@@ -55,14 +50,18 @@ public sealed class MangadexService(
         return feed;
     }
 
-    private async Task UpdateTokenAsync()
+    private async ValueTask UpdateTokenAsync()
     {
         // would be better to use char array instead of string, but it's small enough that it doesn't matter 
+        var client = _httpClientFactory.CreateClient("Mangadex");
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
+        
         var content = "grant_type=refresh_token";
         content += $"&refresh_token={_modelCredentials.RefreshToken}";
         content += $"&client_id={_modelCredentials.ClientId}";
         content += $"&client_secret={_modelCredentials.ClientSecret}";
-        var res = await _httpClient.PostAsync(MangadexAuth,
+        var res = await client.PostAsync(MangadexAuth,
             new StringContent(content, Encoding.UTF8, "application/x-www-form-urlencoded"));
 
         try
@@ -81,21 +80,8 @@ public sealed class MangadexService(
         var data = await res.Content.ReadAsStringAsync();
         var newToken = JsonSerializer.Deserialize<ModelToken>(data);
         if (newToken == null) throw new NullReferenceException();
-        var newCredentials = new ModelCredentials
-        {
-            AccessToken = newToken.access_token,
-            ClientId = _modelCredentials.ClientId,
-            ClientSecret = _modelCredentials.ClientSecret,
-            RefreshToken = _modelCredentials.RefreshToken
-        };
+        var newCredentials = _modelCredentials with { AccessToken = newToken.access_token };
         _modelCredentials = newCredentials;
         await fileService.SaveCredentialsAsync(Directories.CredentialsFile, _modelCredentials);
-        UpdateHeaders();
-    }
-
-    private void UpdateHeaders()
-    {
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
     }
 }
