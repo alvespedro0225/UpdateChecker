@@ -34,7 +34,7 @@ public sealed class EmailService(IFileService fileService) : INotificationServic
     private static Task<MimeMessage> CreateMessage(ModelMailInfo model, string subject, string message)
     {
         var mailMessage = new MimeMessage();
-        mailMessage.Subject = Directories.Subject;
+        mailMessage.Subject = subject;
         mailMessage.Body = new TextPart("plain") { Text = message };
         mailMessage.From.Add(new MailboxAddress(model.FromName, model.From));
         mailMessage.To.Add(new MailboxAddress(model.ToName, model.To));

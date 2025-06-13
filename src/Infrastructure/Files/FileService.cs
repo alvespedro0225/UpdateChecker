@@ -44,8 +44,8 @@ public sealed class FileService : IFileService
             Environment.Exit(1);
         }
 
-        using var stream = new StreamReader(path);
-        var fileData = stream.Read();
+        using var stream = File.OpenText(path);
+        var fileData = stream.ReadToEnd();
         var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.Default);
         
         if (data is null) 

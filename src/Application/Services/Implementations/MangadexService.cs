@@ -7,22 +7,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Services.Implementations;
 
-public sealed class MangadexService(IFileService fileService, ILogger<MangadexService> logger) : IMangadexService
+public sealed class MangadexService(
+    IFileService fileService,
+    ILogger<MangadexService> logger,
+    IHttpClientFactory httpClientFactory) : IMangadexService
 {
     private ModelCredentials _modelCredentials = fileService.GetFileData<ModelCredentials>(Directories.CredentialsFile);
     private const string MangadexApi = "https://api.mangadex.org";
     private const string MangadexAuth = "https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token";
     private const string MangadexFeed = "/user/follows/manga/feed";
-    private readonly IHttpClientFactory _httpClientFactory = null!;
 
     public async ValueTask<ModelFeed?> GetAsync()
     {
-        var client = _httpClientFactory.CreateClient("Mangadex");
+        var client = httpClientFactory.CreateClient("Mangadex");
+        
+        if (!await UpdateTokenAsync(client))
+            return null;
+        
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
-        
-        if (!await UpdateTokenAsync())
-            return null;
         
         var uriBuilder = new UriBuilder(MangadexApi + MangadexFeed);
         uriBuilder.Query += "limit=5";
@@ -36,7 +39,7 @@ public sealed class MangadexService(IFileService fileService, ILogger<MangadexSe
         catch (HttpRequestException e)
         {
             logger.LogError(
-                "Failed request to get a new feed at {now}.\nStatus Code: {statusCode}", DateTime.Now, e.StatusCode);
+                "Failed request to get a new feed at {now}.\nStatus Code: {statusCode}", DateTime.Now, e.HttpRequestError);
             return null;
         }
         var data = await res.Content.ReadAsStringAsync();
@@ -50,13 +53,8 @@ public sealed class MangadexService(IFileService fileService, ILogger<MangadexSe
 
     }
 
-    private async ValueTask<bool> UpdateTokenAsync()
+    private async ValueTask<bool> UpdateTokenAsync(HttpClient client)
     {
-        var client = _httpClientFactory.CreateClient("Mangadex");
-        
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
-
         var builder = new StringBuilder();
         builder.Append("grant_type=refresh_token");
         builder.Append($"&refresh_token={_modelCredentials.RefreshToken}");
@@ -73,7 +71,7 @@ public sealed class MangadexService(IFileService fileService, ILogger<MangadexSe
         catch (HttpRequestException e)
         {
             logger.LogError(
-                "Failed request to update auth token {now}.\nStatus Code: {statusCode}", DateTime.Now, e.StatusCode);
+                "Failed request to update auth token {now}.\nStatus Code: {statusCode}", DateTime.Now, e.HttpRequestError);
             return false;
         }
 
