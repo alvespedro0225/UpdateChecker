@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace Domain.Constants;
 
 public static class Directories

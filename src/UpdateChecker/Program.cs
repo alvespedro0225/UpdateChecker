@@ -10,15 +10,18 @@ var builder = Host.CreateDefaultBuilder(args);
 
 builder.ConfigureServices(services => services
         .AddScoped<IFileService, FileService>()
-        .AddScoped<IHttpClientService, MangadexService>()
-        .AddScoped<IFeedService, FeedService>()
+        .AddScoped<IMangadexService, MangadexService>()
         .AddScoped<INotificationService, EmailService>()
         .AddHostedService<App>()
+        );
+
+builder.ConfigureServices(services => services
         .AddHttpClient("Mangadex", client =>
         {
                 client.DefaultRequestHeaders.UserAgent.Add(
                         new ProductInfoHeaderValue("UpdateChecker", "1.0"));
         }));
 
+// TODO add logging and testing, review models
 await builder.RunConsoleAsync();
 

@@ -1,16 +1,16 @@
 using System.Text;
 using Application.Services;
 using Domain.Constants;
+using Domain.Enums;
 using Domain.Models;
 using Microsoft.Extensions.Hosting;
 
 namespace UpdateChecker;
 
 public class App(
-    IFeedService feedService,
     INotificationService notificationService,
     IFileService fileService,
-    IHttpClientService httpClient,
+    IMangadexService mangadexService,
     IHostApplicationLifetime lifetime) : IHostedService
 {
     private const string ChapterUrl = "https://mangadex.org/chapter";
@@ -23,12 +23,11 @@ public class App(
         {
             Task.Run(async () =>
             {
-                while (!cancellationToken.IsCancellationRequested)
-                    await MainLoop();
+                await MainLoop(cancellationToken);
 
             }, cancellationToken);
         });
-        return Init();
+        return Init(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -36,37 +35,78 @@ public class App(
         return Task.CompletedTask;
     }
 
-    private async Task Init()
+    private async Task Init(CancellationToken token)
     {
         var credentials = fileService.GetFileDataAsync<ModelCredentials>(
             Directories.CredentialsFile);
-        _oldFeed = File.Exists(Directories.FeedFile)
-            ? await fileService.GetFileDataAsync<ModelFeed>(Directories.FeedFile)
-            : await httpClient.GetAsync();
+        var error = 0;
+        
+        while (true)
+        {
+            var feed = File.Exists(Directories.FeedFile)
+                ? await fileService.GetFileDataAsync<ModelFeed>(Directories.FeedFile)
+                : await mangadexService.GetAsync();
+
+            if (feed is not null)
+            {
+                _oldFeed = feed;
+                break;
+            }
+
+
+            if (error >= 3)
+            {
+                await notificationService.NotifyError(Error.FeedError);
+                Environment.Exit(1);
+            }
+            
+            error++;
+            
+            await Task.Delay(new TimeSpan(1, 0, 0), token);
+        }
         await credentials;
     }
 
-    private async Task MainLoop()
+    private async Task MainLoop(CancellationToken token)
     {
-        var newFeed = await httpClient.GetAsync();
-
-        if (feedService.CheckUpdate(_oldFeed, newFeed, out var newChapters))
+        var errors = 0;
+        while (!token.IsCancellationRequested)
         {
-            Console.WriteLine("Found new chapters.");
-            var message = new StringBuilder();
-            await fileService.SaveCredentialsAsync(Directories.FeedFile, newChapters);
+            var newFeed = await mangadexService.GetAsync();
 
-            foreach (string chapter in newChapters)
+            if (newFeed is null)
             {
-                message.AppendLine($"{ChapterUrl}/{chapter}");
-            }
-            
-            var notification = notificationService.Notify(message.ToString());
-            Console.WriteLine("Sending mail.");
-            await notification;
-        }
+                errors++;
 
-        _oldFeed = newFeed;
-        await Task.Delay(new TimeSpan(1, 0, 0));
+                switch (errors)
+                {
+                    case 5:
+                        await notificationService.NotifyError(Error.ConnectionError);
+                        break;
+                    case > 5:
+                        Environment.Exit(1);
+                        break;
+                }
+                
+                await Task.Delay(new TimeSpan(1, 0, 0), token);
+                continue;
+            }
+
+            errors = 0;
+            
+            if (mangadexService.CheckUpdate(_oldFeed, newFeed, out var newChapters))
+            {
+                var message = new StringBuilder();
+                await fileService.SaveCredentialsAsync(Directories.FeedFile, newChapters);
+
+                foreach (string chapter in newChapters)
+                    message.AppendLine($"{ChapterUrl}/{chapter}");
+                
+                await notificationService.Notify(message.ToString());
+            }
+
+            _oldFeed = newFeed;
+            await Task.Delay(new TimeSpan(1, 0, 0), token);
+        }
     }
 }

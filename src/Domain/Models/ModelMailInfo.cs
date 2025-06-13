@@ -2,11 +2,11 @@ namespace Domain.Models;
 
 public sealed record ModelMailInfo
 {
-    public required string FromName { get; set; }
-    public required string ToName { get; set; }
-    public required string From { get; set; }
-    public required string To { get; set; }
-    public required string Password { get; set; }
-    public required string Host { get; set; }
-    public required int Port { get; set; }
+    public required string FromName { get; init; }
+    public required string ToName { get; init; }
+    public required string From { get; init; }
+    public required string To { get; init; }
+    public required string Password { get; init; }
+    public required string Host { get; init; }
+    public required int Port { get; init; }
 }

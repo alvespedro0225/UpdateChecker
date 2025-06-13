@@ -1,6 +1,6 @@
-namespace Domain.Models.JSON;
+namespace Domain.Models;
 
 public sealed class ModelToken
 {
-    public string? access_token { get; init; }
+    public required string AccessToken { get; init; }
 }
