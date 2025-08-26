@@ -43,13 +43,22 @@ public class App(
         
         while (true)
         {
-            var feed = File.Exists(Directories.FeedFile)
-                ? await fileService.GetFileDataAsync<ModelFeed>(Directories.FeedFile)
-                : await mangadexService.GetAsync();
+            ModelFeed? feed;
+
+            if (File.Exists(Directories.FeedFile))
+            {
+                feed = await fileService.GetFileDataAsync<ModelFeed>(Directories.FeedFile);
+                _oldFeed = feed;
+                break;
+            }
+            
+            feed = await mangadexService.GetAsync();
+            
 
             if (feed is not null)
             {
                 _oldFeed = feed;
+                await fileService.SaveFileDataAsync(Directories.FeedFile, feed);
                 break;
             }
 
@@ -97,7 +106,7 @@ public class App(
             if (mangadexService.CheckUpdate(_oldFeed, newFeed, out var newChapters))
             {
                 var message = new StringBuilder();
-                await fileService.SaveCredentialsAsync(Directories.FeedFile, newChapters);
+                await fileService.SaveFileDataAsync(Directories.FeedFile, newChapters);
 
                 foreach (string chapter in newChapters)
                     message.AppendLine($"{ChapterUrl}/{chapter}");

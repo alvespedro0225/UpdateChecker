@@ -15,7 +15,7 @@ public sealed class EmailService(IFileService fileService) : INotificationServic
         var mailMessage = CreateMessage(model, subject, message);
         using var client = new SmtpClient();
         await client.ConnectAsync(model.Host, model.Port);
-        await client.AuthenticateAsync(model.From, model.Password);
+        await client.AuthenticateAsync(model.SenderEmail, model.SenderPassword);
         await client.SendAsync(await mailMessage);
     }
 
@@ -27,7 +27,7 @@ public sealed class EmailService(IFileService fileService) : INotificationServic
         var mailMessage = CreateMessage(model, subject, string.Empty);
         using var client = new SmtpClient();
         await client.ConnectAsync(model.Host, model.Port);
-        await client.AuthenticateAsync(model.From, model.Password);
+        await client.AuthenticateAsync(model.SenderEmail, model.SenderPassword);
         await client.SendAsync(await mailMessage);
     }
 
@@ -36,8 +36,8 @@ public sealed class EmailService(IFileService fileService) : INotificationServic
         var mailMessage = new MimeMessage();
         mailMessage.Subject = subject;
         mailMessage.Body = new TextPart("plain") { Text = message };
-        mailMessage.From.Add(new MailboxAddress(model.FromName, model.From));
-        mailMessage.To.Add(new MailboxAddress(model.ToName, model.To));
+        mailMessage.From.Add(new MailboxAddress("Update Checker", model.SenderEmail));
+        mailMessage.To.Add(new MailboxAddress(model.ReceiverName, model.ReceiverEmail));
         return Task.FromResult(mailMessage);
     }
 }

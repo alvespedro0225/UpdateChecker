@@ -18,7 +18,7 @@ public sealed class FileService : IFileService
 
         using var stream = new StreamReader(path);
         var fileData = await stream.ReadToEndAsync();
-        var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.Default);
+        var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.SnakeCase);
         
         if (data is null) 
             throw new NullReferenceException("File data is null");
@@ -26,11 +26,11 @@ public sealed class FileService : IFileService
         return data;
     }
     
-    public async ValueTask SaveCredentialsAsync<T>(string file, T data)
+    public async ValueTask SaveFileDataAsync<T>(string file, T data)
     {
         var path = Path.Combine(Directories.BaseDir, file);
         await using var stream = new StreamWriter(path);
-        var json = JsonSerializer.Serialize(data, JsonOptions.Default);
+        var json = JsonSerializer.Serialize(data, JsonOptions.SnakeCase);
         await stream.WriteAsync(json);
     }
 
@@ -46,7 +46,7 @@ public sealed class FileService : IFileService
 
         using var stream = File.OpenText(path);
         var fileData = stream.ReadToEnd();
-        var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.Default);
+        var data = JsonSerializer.Deserialize<T>(fileData, JsonOptions.SnakeCase);
         
         if (data is null) 
             throw new NullReferenceException("File data is null");

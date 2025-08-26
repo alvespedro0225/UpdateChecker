@@ -28,9 +28,11 @@ public sealed class MangadexService(
             new AuthenticationHeaderValue("Bearer", _modelCredentials.AccessToken);
         
         var uriBuilder = new UriBuilder(MangadexApi + MangadexFeed);
-        uriBuilder.Query += "limit=5";
-        uriBuilder.Query += "&order[publishAt]=desc";
-        uriBuilder.Query += "&translatedLanguage[]=en";
+        var query = new StringBuilder();
+        query.Append("limit=5");
+        query.Append("&order[publishAt]=desc");
+        query.Append("&translatedLanguage[]=en");
+        uriBuilder.Query = query.ToString();
         var res = await client.GetAsync(uriBuilder.ToString());
         try
         {
@@ -86,7 +88,7 @@ public sealed class MangadexService(
         
         var newCredentials = _modelCredentials with { AccessToken = newToken.AccessToken };
         _modelCredentials = newCredentials;
-        await fileService.SaveCredentialsAsync(Directories.CredentialsFile, _modelCredentials);
+        await fileService.SaveFileDataAsync(Directories.CredentialsFile, _modelCredentials);
         
         return true;
     }
